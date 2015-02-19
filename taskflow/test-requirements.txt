@@ -1,0 +1,32 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
+
+hacking>=0.8.0,<0.9
+oslotest
+mock>=1.0
+testtools>=0.9.34,!=1.2.0,!=1.4.0
+
+# Used for testing the WBE engine.
+kombu>=2.4.8
+
+# Used for testing zookeeper & backends.
+zake>=0.0.13
+kazoo>=0.9
+
+# Used for testing database persistence backends.
+#
+# NOTE(harlowja): SQLAlchemy isn't listed here currently but is
+# listed in our tox.ini files so that we can test multiple varying SQLAlchemy
+# versions to ensure a wider range of compatibility.
+#
+# Explict mysql drivers are also not listed here so that we can test against
+# PyMySQL or MySQL-python depending on the python version the tests are being
+# ran in (MySQL-python is currently preferred for 2.x environments, since
+# it has been used in openstack for the longest).
+alembic>=0.4.1
+psycopg2
+
+# Docs build jobs need these packages.
+sphinx>=1.1.2,<1.1.999
+oslosphinx
