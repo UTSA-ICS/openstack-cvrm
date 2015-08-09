@@ -35,7 +35,7 @@ The build process is as follows:
 
 It provides APIs for managing  attributes and  their values and for assigning the attributes to VM and Storages.
 
-The VM attributes APIS:
+The VM attributes APIs:
 
 *  Create an attribute
 
@@ -72,6 +72,45 @@ nova att-create --name color
 
 ```
  nova att-value-list --name color
+```
+
+The storage attributes APIs:
+
+*  Create an attribute
+
+``` 
+cinder att-create --name color
+```
+
+*  Delete an attribute
+
+```
+ cinder att-delete --name color
+```
+
+
+*  List attributes
+
+```
+ cinder att-list 
+```
+
+*  Create an attribute value
+
+```
+ cinder att-value-set --name color --value red
+```   
+
+*  Delete an attribute value
+
+```
+ cinder att-value-delete --name color --value red
+```
+ 
+*  List values of an attribute
+
+```
+cinder  att-value-list --name color
 ```
 
 #References
