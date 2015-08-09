@@ -9,27 +9,16 @@ CVRM is developed in OpenStack Icehouse (However, it can easily incorporate to l
 
 The build process is as follows:
 
-1. Get it from git
-
-     git clone https://github.com/kbijon/OpenStack-CVRM.git
-The VM attributes APIS:
-
-    1. Create an attribute: nova att-create --name color
+    1. Get it from git
+    git clone https://github.com/kbijon/OpenStack-CVRM.git
 
 2. Rename the directory to stack 
-
     mv OpenStack-CVRM stack
-
 3. Move the directory to /opt
-
     mv stack /opt
-
 4. Get into the devstack  in side stack
-
     cd /opt/stack/devstack
-
 5. Run stach.sh 
-
     ./stack.sh
 
 
@@ -51,4 +40,4 @@ The VM attributes APIS:
 
 Please refer to/cite the following paper.
 
-[Virtual Resource Orchestration Constraints in Cloud Infrastructure as a Service](http://profsandhu.com/confrnc/misconf/p183-bijon.pdf), Khalid Bijon, Ram Krishnan, and Ravi Sandhu.In Proceedings of the 5th ACM Conference on Data and Application Security and Privacy (CODASPY), March 2-4, 2015, San Antonio, Texas, pages 183-194.
+    [Virtual Resource Orchestration Constraints in Cloud Infrastructure as a Service](http://profsandhu.com/confrnc/misconf/p183-bijon.pdf), Khalid Bijon, Ram Krishnan, and Ravi Sandhu.In Proceedings of the 5th ACM Conference on Data and Application Security and Privacy (CODASPY), March 2-4, 2015, San Antonio, Texas, pages 183-194.
