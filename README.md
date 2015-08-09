@@ -11,14 +11,17 @@ The build process is as follows:
 1. Get it from git
 
     git clone https://github.com/kbijon/OpenStack-CVRM.git
-
 2. Rename the directory to stack 
+
     mv OpenStack-CVRM stack
 3. Move the directory to /opt
+
     mv stack /opt
 4. Get into the devstack  in side stack
+
     cd /opt/stack/devstack
 5. Run stach.sh 
+
     ./stack.sh
 
 
