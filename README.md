@@ -8,8 +8,8 @@ The project is built on DevStack and is in beta stage. The master branch is in v
 CVRM is developed in OpenStack Icehouse (However, it can easily incorporate to later versions(Kilo or Juno).
 
 The build process is as follows:
+1. Get it from git
 
-    1. Get it from git
     git clone https://github.com/kbijon/OpenStack-CVRM.git
 
 2. Rename the directory to stack 
