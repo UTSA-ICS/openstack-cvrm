@@ -12,6 +12,9 @@ The build process is as follows:
 1. Get it from git
 
      git clone https://github.com/kbijon/OpenStack-CVRM.git
+The VM attributes APIS:
+
+    1. Create an attribute: nova att-create --name color
 
 2. Rename the directory to stack 
 
