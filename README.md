@@ -32,8 +32,6 @@ The VM attributes APIS:
 
 References
 
-Please refer to/cite the following papers based on the scheduler you are using: the former for SEBF and the latter for DARK.
+Please refer to/cite the following paper.
 
-    Efficient Coflow Scheduling with Varys, Mosharaf Chowdhury, Yuan Zhong, Ion Stoica, ACM SIGCOMM, 2014.
-    Efficient Coflow Scheduling Without Prior Knowledge, Mosharaf Chowdhury, Ion Stoica, ACM SIGCOMM, 2015.
-
+[Virtual Resource Orchestration Constraints in Cloud Infrastructure as a Service](http://profsandhu.com/confrnc/misconf/p183-bijon.pdf), Khalid Bijon, Ram Krishnan, and Ravi Sandhu.In Proceedings of the 5th ACM Conference on Data and Application Security and Privacy (CODASPY), March 2-4, 2015, San Antonio, Texas, pages 183-194.
