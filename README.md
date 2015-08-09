@@ -8,24 +8,25 @@ The project is built on DevStack and is in beta stage. The master branch is in v
 CVRM is developed in OpenStack Icehouse (However, it can easily incorporate to later versions(Kilo or Juno).
 
 The build process is as follows:
-1. Get it from git
+* Get it from git
 
 ```
     git clone https://github.com/kbijon/OpenStack-CVRM.git
 ```
-2. Rename the directory to stack:
+* Rename the directory to stack:
 ```
     mv -r OpenStack-CVRM stack
 ```
-3. Move the directory to /opt
+
+*  Move the directory to /opt
 ```
     mv -r stack /opt/
 ```
-4. Get into the devstack  in side stack
+*  Get into the devstack  in side stack
 ```
     cd /opt/stack/devstack
 ```
-5. Run stach.sh 
+*  Run stach.sh 
 ```
     ./stack.sh
 ```
@@ -36,27 +37,41 @@ It provides APIs for managing  attributes and  their values and for assigning th
 
 The VM attributes APIS:
 
-1. Create an attribute
-``` nova att-create --name color
+*  Create an attribute
+
+``` 
+nova att-create --name color
 ```
-2. Delete an attribute
+
+*  Delete an attribute
+
 ```
  nova att-delete --name color
 ```
-3. List attributes
+
+
+*  List attributes
+
 ```
  nova att-list 
 ```
-4. Create an attribute value
+
+*  Create an attribute value
+
 ```
  nova att-value-set --name color --value red
 ```   
-5. Delete an attribute value
+
+*  Delete an attribute value
+
 ```
  nova att-value-delete --name color --value red
 ```
-6. List values of an attribute
-``` nova att-value-list --name color
+ 
+*  List values of an attribute
+
+```
+ nova att-value-list --name color
 ```
 
 #References
