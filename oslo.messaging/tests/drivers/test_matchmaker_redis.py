@@ -66,10 +66,10 @@ class RedisMatchMakerTest(test_utils.BaseTestCase):
             [('cert.controller1', 'controller1')])
 
     def test_register(self):
-        self.matcher.register('cert', 'keymaster')
+        self.matcher.register('cert', 'keymain')
         self.assertEqual(
             sorted(self.matcher.redis.smembers('cert')),
-            ['cert.controller1', 'cert.keymaster'])
+            ['cert.controller1', 'cert.keymain'])
 
     def test_unregister(self):
         self.matcher.unregister('conductor', 'controller1')

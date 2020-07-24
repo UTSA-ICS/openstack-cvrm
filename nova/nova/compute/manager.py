@@ -662,7 +662,7 @@ class ComputeManager(manager.Manager):
             driver_uuids = self.driver.list_instance_uuids()
             filters['uuid'] = driver_uuids
             local_instances = instance_obj.InstanceList.get_by_filters(
-                context, filters, use_slave=True)
+                context, filters, use_subordinate=True)
             return local_instances
         except NotImplementedError:
             pass
@@ -671,7 +671,7 @@ class ComputeManager(manager.Manager):
         # to brute force.
         driver_instances = self.driver.list_instances()
         instances = instance_obj.InstanceList.get_by_filters(context, filters,
-                                                             use_slave=True)
+                                                             use_subordinate=True)
         name_map = dict((instance.name, instance) for instance in instances)
         local_instances = []
         for driver_instance in driver_instances:
@@ -1126,7 +1126,7 @@ class ComputeManager(manager.Manager):
         """This call passes straight through to the virtualization driver."""
         return self.driver.refresh_provider_fw_rules()
 
-    def _get_instance_nw_info(self, context, instance, use_slave=False):
+    def _get_instance_nw_info(self, context, instance, use_subordinate=False):
         """Get a list of dictionaries of network data of an instance."""
         if (not hasattr(instance, 'system_metadata') or
                 len(instance['system_metadata']) == 0):
@@ -1137,7 +1137,7 @@ class ComputeManager(manager.Manager):
             # succeed.
             instance = instance_obj.Instance.get_by_uuid(context,
                                                          instance['uuid'],
-                                                         use_slave=use_slave)
+                                                         use_subordinate=use_subordinate)
 
         network_info = self.network_api.get_instance_nw_info(context,
                                                              instance)
@@ -1484,7 +1484,7 @@ class ComputeManager(manager.Manager):
                    'host': self.host}
 
         building_insts = instance_obj.InstanceList.get_by_filters(context,
-                           filters, expected_attrs=[], use_slave=True)
+                           filters, expected_attrs=[], use_subordinate=True)
 
         for instance in building_insts:
             if timeutils.is_older_than(instance['created_at'], timeout):
@@ -4850,7 +4850,7 @@ class ComputeManager(manager.Manager):
             # The list of instances to heal is empty so rebuild it
             LOG.debug(_('Rebuilding the list of instances to heal'))
             db_instances = instance_obj.InstanceList.get_by_host(
-                context, self.host, expected_attrs=[], use_slave=True)
+                context, self.host, expected_attrs=[], use_subordinate=True)
             for inst in db_instances:
                 # We don't want to refersh the cache for instances
                 # which are building or deleting so don't put them
@@ -4880,7 +4880,7 @@ class ComputeManager(manager.Manager):
                     inst = instance_obj.Instance.get_by_uuid(
                             context, instance_uuids.pop(0),
                             expected_attrs=['system_metadata', 'info_cache'],
-                            use_slave=True)
+                            use_subordinate=True)
                 except exception.InstanceNotFound:
                     # Instance is gone.  Try to grab another.
                     continue
@@ -4903,7 +4903,7 @@ class ComputeManager(manager.Manager):
             try:
                 # Call to network API to get instance info.. this will
                 # force an update to the instance's info_cache
-                self._get_instance_nw_info(context, instance, use_slave=True)
+                self._get_instance_nw_info(context, instance, use_subordinate=True)
                 LOG.debug(_('Updated the network info_cache for instance'),
                           instance=instance)
             except Exception:
@@ -4919,7 +4919,7 @@ class ComputeManager(manager.Manager):
             filters = {'task_state': task_states.REBOOTING,
                        'host': self.host}
             rebooting = instance_obj.InstanceList.get_by_filters(
-                context, filters, expected_attrs=[], use_slave=True)
+                context, filters, expected_attrs=[], use_subordinate=True)
 
             to_poll = []
             for instance in rebooting:
@@ -4936,7 +4936,7 @@ class ComputeManager(manager.Manager):
                        'host': self.host}
             rescued_instances = self.conductor_api.instance_get_all_by_filters(
                 context, filters, columns_to_join=["system_metadata"],
-                use_slave=True)
+                use_subordinate=True)
 
             to_unrescue = []
             for instance in rescued_instances:
@@ -4955,7 +4955,7 @@ class ComputeManager(manager.Manager):
         mig_list_cls = migration_obj.MigrationList
         migrations = mig_list_cls.get_unconfirmed_by_dest_compute(
                 context, CONF.resize_confirm_window, self.host,
-                use_slave=True)
+                use_subordinate=True)
 
         migrations_info = dict(migration_count=len(migrations),
                 confirm_window=CONF.resize_confirm_window)
@@ -4983,7 +4983,7 @@ class ComputeManager(manager.Manager):
             try:
                 instance = instance_obj.Instance.get_by_uuid(context,
                             instance_uuid, expected_attrs=expected_attrs,
-                            use_slave=True)
+                            use_subordinate=True)
             except exception.InstanceNotFound:
                 reason = (_("Instance %s not found") %
                           instance_uuid)
@@ -5020,7 +5020,7 @@ class ComputeManager(manager.Manager):
                    'host': self.host}
         shelved_instances = instance_obj.InstanceList.get_by_filters(
             context, filters=filters, expected_attrs=['system_metadata'],
-            use_slave=True)
+            use_subordinate=True)
 
         to_gc = []
         for instance in shelved_instances:
@@ -5115,7 +5115,7 @@ class ComputeManager(manager.Manager):
 
             instances = instance_obj.InstanceList.get_by_host(context,
                                                               self.host,
-                                                              use_slave=True)
+                                                              use_subordinate=True)
             try:
                 bw_counters = self.driver.get_all_bw_counters(instances)
             except NotImplementedError:
@@ -5138,7 +5138,7 @@ class ComputeManager(manager.Manager):
                 last_ctr_in = None
                 last_ctr_out = None
                 # TODO(geekinutah): Once bw_usage_cache object is created
-                #                   need to revisit this and slaveify.
+                #                   need to revisit this and subordinateify.
                 usage = self.conductor_api.bw_usage_get(context,
                                                         bw_ctr['uuid'],
                                                         start_time,
@@ -5149,7 +5149,7 @@ class ComputeManager(manager.Manager):
                     last_ctr_in = usage['last_ctr_in']
                     last_ctr_out = usage['last_ctr_out']
                 else:
-                    # TODO(geekinutah): Same here, pls slaveify
+                    # TODO(geekinutah): Same here, pls subordinateify
                     usage = self.conductor_api.bw_usage_get(
                         context, bw_ctr['uuid'], prev_time,
                         bw_ctr['mac_address'])
@@ -5242,7 +5242,7 @@ class ComputeManager(manager.Manager):
         """
         db_instances = instance_obj.InstanceList.get_by_host(context,
                                                              self.host,
-                                                             use_slave=True)
+                                                             use_subordinate=True)
 
         num_vm_instances = self.driver.get_num_instances()
         num_db_instances = len(db_instances)
@@ -5273,7 +5273,7 @@ class ComputeManager(manager.Manager):
                     self._sync_instance_power_state(context,
                                                     db_instance,
                                                     vm_power_state,
-                                                    use_slave=True)
+                                                    use_subordinate=True)
                 except exception.InstanceNotFound:
                     # NOTE(hanlind): If the instance gets deleted during sync,
                     # silently ignore and move on to next instance.
@@ -5284,7 +5284,7 @@ class ComputeManager(manager.Manager):
                                 instance=db_instance)
 
     def _sync_instance_power_state(self, context, db_instance, vm_power_state,
-                                   use_slave=False):
+                                   use_subordinate=False):
         """Align instance power state between the database and hypervisor.
 
         If the instance is not found on the hypervisor, but is in the database,
@@ -5293,7 +5293,7 @@ class ComputeManager(manager.Manager):
 
         # We re-query the DB to get the latest instance info to minimize
         # (not eliminate) race condition.
-        db_instance.refresh(use_slave=use_slave)
+        db_instance.refresh(use_subordinate=use_subordinate)
         db_power_state = db_instance.power_state
         vm_state = db_instance.vm_state
 
@@ -5439,7 +5439,7 @@ class ComputeManager(manager.Manager):
         instances = instance_obj.InstanceList.get_by_filters(
             context, filters,
             expected_attrs=instance_obj.INSTANCE_DEFAULT_FIELDS,
-            use_slave=True)
+            use_subordinate=True)
         for instance in instances:
             if self._deleted_old_enough(instance, interval):
                 bdms = (block_device_obj.BlockDeviceMappingList.
@@ -5522,7 +5522,7 @@ class ComputeManager(manager.Manager):
             for instance in self._running_deleted_instances(context):
                 bdms = (block_device_obj.BlockDeviceMappingList.
                         get_by_instance_uuid(context, instance.uuid,
-                                             use_slave=True))
+                                             use_subordinate=True))
 
                 if action == "log":
                     LOG.warning(_("Detected instance with name label "
@@ -5620,11 +5620,11 @@ class ComputeManager(manager.Manager):
 
     @aggregate_object_compat
     @wrap_exception()
-    def add_aggregate_host(self, context, aggregate, host, slave_info):
+    def add_aggregate_host(self, context, aggregate, host, subordinate_info):
         """Notify hypervisor of change (for hypervisor pools)."""
         try:
             self.driver.add_to_aggregate(context, aggregate, host,
-                                         slave_info=slave_info)
+                                         subordinate_info=subordinate_info)
         except NotImplementedError:
             LOG.debug(_('Hypervisor driver does not support '
                         'add_aggregate_host'))
@@ -5637,11 +5637,11 @@ class ComputeManager(manager.Manager):
 
     @aggregate_object_compat
     @wrap_exception()
-    def remove_aggregate_host(self, context, host, slave_info, aggregate):
+    def remove_aggregate_host(self, context, host, subordinate_info, aggregate):
         """Removes a host from a physical hypervisor pool."""
         try:
             self.driver.remove_from_aggregate(context, aggregate, host,
-                                              slave_info=slave_info)
+                                              subordinate_info=subordinate_info)
         except NotImplementedError:
             LOG.debug(_('Hypervisor driver does not support '
                         'remove_aggregate_host'))
@@ -5698,7 +5698,7 @@ class ComputeManager(manager.Manager):
                    'soft_deleted': True,
                    'host': nodes}
         filtered_instances = instance_obj.InstanceList.get_by_filters(context,
-                                 filters, expected_attrs=[], use_slave=True)
+                                 filters, expected_attrs=[], use_subordinate=True)
 
         self.driver.manage_image_cache(context, filtered_instances)
 
